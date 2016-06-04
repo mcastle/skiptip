@@ -17,7 +17,11 @@ defmodule Skiptip.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+
+    get "/facebook_logins/new", FacebookLoginController, :new
+    get "/facebook_logins/callback", FacebookLoginController, :callback
   end
+
 
   # Other scopes may use custom stacks.
   # scope "/api", Skiptip do
