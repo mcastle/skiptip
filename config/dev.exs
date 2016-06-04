@@ -6,8 +6,9 @@ use Mix.Config
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with brunch.io to recompile .js and .css sources.
+port = System.get_env("PORT") || 4000
 config :skiptip, Skiptip.Endpoint,
-  http: [port: 4000],
+  http: [port: port],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
@@ -36,7 +37,7 @@ config :phoenix, :stacktrace_depth, 20
 config :skiptip, Skiptip.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "skiptip",
-  password: "NIRGHmh5vftGurF0BM84",
+  password: "skiptip",
   database: "skiptip_development",
   hostname: "localhost",
   pool_size: 10
