@@ -19,7 +19,7 @@ defmodule Skiptip.Mixfile do
   def application do
     [mod: {Skiptip, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :httpoison]]
+                    :phoenix_ecto, :postgrex, :httpoison, :timex]]
   end
 
   # Specifies which paths to compile per environment.
@@ -38,7 +38,8 @@ defmodule Skiptip.Mixfile do
      {:gettext, "~> 0.9"},
      {:cowboy, "~> 1.0"},
      {:poison, "~> 1.5"},
-     {:httpoison, "~> 0.8.0"}]
+     {:httpoison, "~> 0.8.0"},
+     {:timex, "~> 2.1.1"}]
   end
 
   # Aliases are shortcut or tasks specific to the current project.
