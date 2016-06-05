@@ -18,3 +18,11 @@ config :skiptip, Skiptip.Repo,
   database: "skiptip_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :skiptip, Skiptip.DevelopmentRepo,
+  adapter: Ecto.Adapters.Postgres,
+  username: "skiptip",
+  password: "skiptip",
+  database: "skiptip_development",
+  hostname: "localhost",
+  pool: Ecto.Adapters.SQL.Sandbox

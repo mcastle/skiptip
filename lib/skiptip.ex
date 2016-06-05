@@ -11,6 +11,8 @@ defmodule Skiptip do
       supervisor(Skiptip.Endpoint, []),
       # Start the Ecto repository
       supervisor(Skiptip.Repo, []),
+      # for when we need access to development from other environments
+      supervisor(Skiptip.DevelopmentRepo, []),
       # Here you could define other workers and supervisors as children
       # worker(Skiptip.Worker, [arg1, arg2, arg3]),
     ]
