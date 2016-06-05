@@ -3,11 +3,13 @@ defmodule Skiptip.User do
   import Ecto.Query
   alias Skiptip.Repo
   alias Skiptip.FacebookLogin
+  alias Skiptip.BuyerProfile
   alias Skiptip.User
 
   schema "users" do
 
     has_one :facebook_login, FacebookLogin
+    has_one :buyer_profile, BuyerProfile
     timestamps
   end
 
@@ -23,10 +25,11 @@ defmodule Skiptip.User do
     user = changeset(%User{}, %{}) |> Repo.insert!
     Ecto.build_assoc(user, :facebook_login, facebook_user_id: facebook_user_id, facebook_access_token: token)
       |> Repo.insert!
+    Ecto.build_assoc(user, :buyer_profile) |> BuyerProfile.before_create |> Repo.insert!
+    user
   end
 
   def find_by(:id, id) do
-    IO.puts "id is #{id}"
     User
       |> where(id: ^id)
       |> Repo.one

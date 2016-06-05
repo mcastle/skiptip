@@ -2,7 +2,9 @@ defmodule Skiptip.UserTest do
   use Skiptip.ModelCase
 
   alias Skiptip.FacebookLogin
+  alias Skiptip.BuyerProfile
   alias Skiptip.User
+  alias Skiptip.Factory
 
   @valid_attrs %{}
   @invalid_attrs %{}
@@ -25,6 +27,11 @@ defmodule Skiptip.UserTest do
     refute FacebookLogin.find_user_by(:facebook_user_id, facebook_user_id)
     User.create(token, facebook_user_id)
     assert FacebookLogin.find_user_by(:facebook_user_id, facebook_user_id)
-
   end
+
+  test "associated buyer_profile gets created on create" do
+    user = Factory.create_user
+    assert BuyerProfile.find_by(:user_id, user.id)
+  end
+
 end
