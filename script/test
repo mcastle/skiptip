@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+test_filename=$1
+search_string="test.*$2.* do"
+line_number=`cat -n "$test_filename" | grep "$search_string" | head -1 | grep -E -o '^\s+[0-9]+' | sed 's/ //g'`
+
+if [ -z "$line_number" ]; then
+  echo "no matching test found"
+else
+  mix test "$test_filename:$line_number"
+fi

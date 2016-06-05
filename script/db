@@ -1,1 +1,6 @@
-psql -d skiptip_development -U skiptip
+MIX_ENV="${MIX_ENV:-skiptip_development}"
+if [ $# -eq 0 ]; then
+    psql -d $MIX_ENV -U skiptip
+else
+    psql -d $MIX_ENV -U skiptip -c "$1"
+fi
