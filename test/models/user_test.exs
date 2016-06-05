@@ -7,14 +7,16 @@ defmodule Skiptip.UserTest do
   @valid_attrs %{}
   @invalid_attrs %{}
 
+  @tag :skip
   test "changeset with valid attributes" do
     changeset = User.changeset(%User{}, @valid_attrs)
     assert changeset.valid?
   end
 
+  @tag :skip
   test "changeset with invalid attributes" do
     changeset = User.changeset(%User{}, @invalid_attrs)
-    #refute changeset.valid?
+    refute changeset.valid?
   end
 
   test "associated facebook_login gets created on create" do

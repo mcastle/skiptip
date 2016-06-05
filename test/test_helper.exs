@@ -1,4 +1,4 @@
-ExUnit.start
+ExUnit.start(exclude: [:skip])
 
 Mix.Task.run "ecto.create", ~w(-r Skiptip.Repo --quiet)
 Mix.Task.run "ecto.migrate", ~w(-r Skiptip.Repo --quiet)
