@@ -25,7 +25,7 @@ defmodule Skiptip.User do
     user = changeset(%User{}, %{}) |> Repo.insert!
     Ecto.build_assoc(user, :facebook_login, facebook_user_id: facebook_user_id, facebook_access_token: token)
       |> Repo.insert!
-    Ecto.build_assoc(user, :buyer_profile) |> BuyerProfile.before_create |> Repo.insert!
+    Ecto.build_assoc(user, :buyer_profile) |> BuyerProfile.before_create(token, facebook_user_id) |> Repo.insert!
     user
   end
 

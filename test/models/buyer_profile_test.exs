@@ -32,4 +32,16 @@ defmodule Skiptip.BuyerProfileTest do
 		assert user.buyer_profile.picture_url == default_picture_url
 	end
 
+	test "default name is set to facebook name" do
+		user = Factory.create_user_with_valid_facebook_credentials
+			|> Repo.preload(:buyer_profile)
+		assert user.buyer_profile.name == "Brian Maxwell"
+	end
+
+	test "default display_name is set based on facbeook name" do
+		user = Factory.create_user_with_valid_facebook_credentials
+			|> Repo.preload(:buyer_profile)
+		assert user.buyer_profile.display_name == "Brian Maxwell"
+	end
+
 end
