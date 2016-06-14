@@ -22,16 +22,21 @@ defmodule Skiptip.UserTest do
   end
 
   test "associated facebook_login gets created on create" do
-    token = "access_token"
-    facebook_user_id = "12345678900987654321"
+    token = "abcdefghijklmnopqrstuvwxyz"
+    facebook_user_id = "12345678987654321"
     refute FacebookLogin.find_user_by(:facebook_user_id, facebook_user_id)
-    User.create(token, facebook_user_id)
+    User.create(token, facebook_user_id, "anon")
     assert FacebookLogin.find_user_by(:facebook_user_id, facebook_user_id)
   end
 
   test "associated buyer_profile gets created on create" do
-    user = Factory.create_user
+		user = Factory.create_user_with_valid_facebook_credentials
     assert BuyerProfile.find_by(:user_id, user.id)
+  end
+
+  test "api_key generated on create" do
+    user = Factory.create_user
+    assert user.api_key
   end
 
 end

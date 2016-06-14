@@ -7,7 +7,7 @@ defmodule Skiptip.BuyerProfile do
   schema "buyer_profiles" do
     field :display_name, :string
     field :name, :string
-    field :username, :string
+    field :username, :string, unique: true
     field :bio, :string
     field :picture_url, :string
 
@@ -15,19 +15,24 @@ defmodule Skiptip.BuyerProfile do
     timestamps
   end
 
-	def before_create(buyer_profile, fb_token, fb_uid) do
-		name = get_facebook_name(fb_token, fb_uid)
-		initial_values = %{
+	def default_params(%{name: name, username: username}) do
+		%{
 			bio: "hello world",
 			picture_url: "https://s3.amazonaws.com/skiptip-development/public/no_profile_picture.png",
 			name: name,
-			display_name: name}
-		Map.merge(buyer_profile, initial_values)
-	end 
+			display_name: name,
+			username: username
+		}
+	end
 
-  #@required_fields ~w(user_id, name, username, display_name)
-	@required_fields ~w()
-  @optional_fields ~w()
+  def default_params(%{name: name}) do
+    default_params %{name: name, username: generate_username(name)}
+  end
+
+  def default_params(nil), do: %{}
+
+	@required_fields ~w(user_id name username display_name bio)
+  @optional_fields ~w(picture_url)
 
   @doc """
   Creates a changeset based on the `model` and `params`.
@@ -35,9 +40,12 @@ defmodule Skiptip.BuyerProfile do
   If no params are provided, an invalid changeset is returned
   with no validation performed.
   """
+  def changeset(model, :create, :empty), do: changeset(model, default_params(nil))
+  def changeset(model, :create, params), do: changeset(model, default_params(params))
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
+    |> unique_constraint(:username) 
   end
 
 	def get_facebook_name(fb_token, fb_uid) do
@@ -45,6 +53,29 @@ defmodule Skiptip.BuyerProfile do
     HTTPoison.start
     %HTTPoison.Response{status_code: status_code, body: body} = HTTPoison.get!(url)
 		Poison.decode!(body)["name"]
+	end
+
+	def generate_username(name) do
+		name = name || ""
+		first_name = name |> String.downcase |> String.split |> List.first
+		ilike = "#{first_name}-%"
+		count = Repo.one from bp in BuyerProfile,
+						where: ilike(bp.username, ^ilike),
+						select: count("*")
+		inflated_count = 700 + (count * 50)
+		find_first_distinct_username(first_name, inflated_count)
+	end
+
+	def find_first_distinct_username(first_name, count) do
+		condensed = Skiptip.Utils.condense(count)
+		candidate_username = "#{first_name}-#{condensed}"
+		conflicting_buyer_profile = BuyerProfile
+																|> where(username: ^candidate_username)
+																|> Repo.one
+		case conflicting_buyer_profile do
+			nil -> candidate_username
+			_ -> find_first_distinct_username(first_name, count + 1)
+		end
 	end
 	
 	def find_by(:user_id, user_id) do
