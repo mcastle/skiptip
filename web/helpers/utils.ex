@@ -23,7 +23,6 @@ defmodule Skiptip.Utils do
     HTTPoison.start
     %HTTPoison.Response{status_code: 200, body: body} = HTTPoison.get!(endpoint)
     body
-    "body is too long"
   end
 
 end

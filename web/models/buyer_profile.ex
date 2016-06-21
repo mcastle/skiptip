@@ -45,6 +45,7 @@ defmodule Skiptip.BuyerProfile do
     |> cast(params, @required_fields, @optional_fields)
     |> unique_constraint(:username) 
     |> unique_constraint(:email)
+    |> validate_length(:bio, max: 500)
   end
 
   def params_from_facebook(fb_token, fb_uid) do
