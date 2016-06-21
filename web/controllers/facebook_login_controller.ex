@@ -9,10 +9,9 @@ defmodule Skiptip.FacebookLoginController do
 
   def new(conn, _params) do
     app_id = "504019469804454"
-    callback_url = facebook_login_url(conn, :callback)
     code_url = "https://www.facebook.com/dialog/oauth?"
     code_url = code_url <> "client_id=" <> app_id <>"&"
-    code_url = code_url <> "redirect_uri=" <> callback_url <> "&"
+    code_url = code_url <> "redirect_uri=" <> callback_url(conn) <> "&"
     code_url = code_url <> "auth_type=rerequest&"
     code_url = code_url <> "scope=email"
     redirect(conn, external: code_url)
@@ -23,13 +22,14 @@ defmodule Skiptip.FacebookLoginController do
     app_id = "504019469804454"
     app_secret = "3c071367622fc724dd500705d659170c"
     code = params["code"]
-    callback_url = facebook_login_url(conn, :callback)
     access_token_url = "https://graph.facebook.com/v2.3/oauth/access_token"
-    parameters = %{client_id: app_id, client_secret: app_secret, code: code, redirect_uri: callback_url}
+    parameters = %{client_id: app_id, client_secret: app_secret, code: code, redirect_uri: callback_url(conn)}
     get_request = HTTPoison.get!(access_token_url, [], params: parameters)
     %HTTPoison.Response{body: body, status_code: status_code} = get_request
     render_callback(conn, status_code, body)
   end
+
+  def callback_url(conn), do: facebook_login_url(conn, :callback)
 
   def render_callback(conn, 200, body) do
     token = Poison.decode!(body)["access_token"]

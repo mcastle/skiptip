@@ -22,10 +22,10 @@ defmodule Skiptip.UserTest do
   end
 
   test "associated facebook_login gets created on create" do
-    token = "abcdefghijklmnopqrstuvwxyz"
-    facebook_user_id = "12345678987654321"
+    token = Skiptip.Utils.random_string(26)
+    facebook_user_id = Skiptip.Utils.random_string(14)
     refute FacebookLogin.find_user_by(:facebook_user_id, facebook_user_id)
-    User.create(token, facebook_user_id, "anon")
+    User.create(token, facebook_user_id, %{name: "anon", email: "anon@anon.com"})
     assert FacebookLogin.find_user_by(:facebook_user_id, facebook_user_id)
   end
 

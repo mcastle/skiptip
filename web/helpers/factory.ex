@@ -7,9 +7,13 @@ defmodule Skiptip.Factory do
   alias Skiptip.BuyerProfile
   import Ecto.Query
 
-  def create_user(name \\ nil) do
-    name = name || "anonymous"
-    User.create(facebook_access_token, facebook_user_id, name)
+  def create_user do
+    name = random_full_name
+    create_user(%{name: name, email: dummy_email_from_name(name)})
+  end
+
+  def create_user(buyer_profile_params) do
+    User.create(facebook_access_token, facebook_user_id, buyer_profile_params)
   end
 
   # fb_uid for Brian Maxwell (that's me!)
@@ -20,31 +24,31 @@ defmodule Skiptip.Factory do
       |> User.create(facebook_user_id)
   end
 
-  def create_buyer_profile do
-    create_arbitrary_buyer_profile(random_full_name)
+  def dummy_buyer_profile_params, do: dummy_buyer_profile_params(random_full_name)
+  def dummy_buyer_profile_params(name) do
+    %{
+      name: name,
+      display_name: name,
+      username: name,
+      email: dummy_email_from_name(name),
+      bio: Utils.lorem_ipsum
+    }
   end
 
-  def create_arbitrary_buyer_profile(name) do
-    username = Utils.random_string(20)
-    create_buyer_profile(name, username)
-  end
-
-  def new_buyer_profile(name, username) do
+  def new_buyer_profile(params) do
+    dummy_params = Map.get(params, :name, random_full_name) |> dummy_buyer_profile_params
+    params = Map.merge(dummy_params, params)
     user = User.changeset(%User{}) |> Repo.insert!
-
     Ecto.build_assoc(user, :buyer_profile)
-      |> BuyerProfile.changeset(:create, %{name: name, username: username})
+      |> BuyerProfile.changeset(:create, params)
   end
 
-  def create_buyer_profile!(name, username) do
-    new_buyer_profile(name, username) |> Repo.insert!
-  end
+  def create_buyer_profile!(params), do: new_buyer_profile(params) |> Repo.insert!
+  def create_buyer_profile!, do: create_buyer_profile!(dummy_buyer_profile_params)
+  def create_buyer_profile(params), do: new_buyer_profile(params) |> Repo.insert
+  def create_buyer_profile, do: create_buyer_profile(dummy_buyer_profile_params)
 
-  def create_buyer_profile(name, username) do
-    new_buyer_profile(name, username) |> Repo.insert
-  end
-
-  def retreive_valid_facebook_api_credentials(facebook_user_id \\ nil) do
+  def retrieve_valid_facebook_api_credentials(facebook_user_id \\ nil) do
     facebook_user_id = facebook_user_id || @facebook_user_id
     %{
       facebook_access_token: retrieve_access_token_from_development_db(facebook_user_id),
@@ -56,12 +60,13 @@ defmodule Skiptip.Factory do
   defp random_name, do: Utils.random_string(10)
   defp facebook_user_id, do: Utils.random_string_of_digits(17)
   defp facebook_access_token, do: Utils.random_string(217)
+  defp dummy_email_from_name(name), do: "#{name}@domain.com" |> String.replace(" ", "") |> String.downcase
+
   defp retrieve_access_token_from_development_db(facebook_user_id) do
     %FacebookLogin{facebook_access_token: fb_access_token} = FacebookLogin
       |> where(facebook_user_id: ^facebook_user_id)
       |> DevelopmentRepo.one
     fb_access_token
   end
-
 
 end

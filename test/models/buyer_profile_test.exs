@@ -21,8 +21,8 @@ defmodule Skiptip.BuyerProfileTest do
   end
 
   test "username must be unique" do
-		Factory.create_buyer_profile!("Max", "mad_max")
-		{:error, invalid} = Factory.create_buyer_profile("Rockatansky", "mad_max")
+		Factory.create_buyer_profile!(%{username: "mad_max"})
+		{:error, invalid} = Factory.create_buyer_profile(%{username: "mad_max"})
     refute invalid.valid?
   end
 
@@ -59,6 +59,12 @@ defmodule Skiptip.BuyerProfileTest do
 		assert user.buyer_profile.username == next_username
 	end
 
+  test "default email is set based on facebook name" do
+    user = Factory.create_user_with_valid_facebook_credentials
+      |> Repo.preload(:buyer_profile)
+    assert user.buyer_profile.email == "brianmaxwell1@gmail.com"
+  end
+
 	test "generate_username" do
 		next_username = "dave-" <> Skiptip.Utils.condense(700)
 		username = BuyerProfile.generate_username("Dave Bowman")
@@ -67,7 +73,7 @@ defmodule Skiptip.BuyerProfileTest do
 
 	test "generate_username adjusts username for duplicates" do
 		next_username = "tom-" <> Skiptip.Utils.condense(750)
-		Factory.create_buyer_profile("Tom h", next_username)
+		Factory.create_buyer_profile(%{username: next_username})
 		resolution_username = "tom-" <> Skiptip.Utils.condense(751)
 		username = BuyerProfile.generate_username("Tom Peabody")
 		assert username == resolution_username

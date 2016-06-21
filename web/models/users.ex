@@ -17,17 +17,18 @@ defmodule Skiptip.User do
   @required_fields ~w(api_key)
   @optional_fields ~w()
 
-  def changeset(model, params \\ :empty) do
-    if params == :empty, do: params = default_params
+  def changeset(model) do
+    changeset(model, default_params)
+  end
+
+  def changeset(model, params) do
     model
     |> cast(params, @required_fields, @optional_fields)
     |> unique_constraint(:api_key) 
   end
 
   def default_params do
-    %{
-      api_key: generate_api_key
-    }
+    %{ api_key: generate_api_key }
   end
 
   def generate_api_key do
@@ -41,18 +42,21 @@ defmodule Skiptip.User do
     Utils.random_string(10)
   end
 
-  def create(token, facebook_user_id, name \\ nil) do
-    user = changeset(%User{}, User.default_params) |> Repo.insert!
+  def create(token, facebook_user_id, buyer_profile_params) do
+    user = changeset(%User{}) |> Repo.insert!
 
-    facebook_login = Ecto.build_assoc(user, :facebook_login)
-    FacebookLogin.changeset(facebook_login, %{facebook_access_token: token, facebook_user_id: facebook_user_id})
+    Ecto.build_assoc(user, :facebook_login)
+      |> FacebookLogin.changeset(%{facebook_access_token: token, facebook_user_id: facebook_user_id})
       |> Repo.insert!
  
-    name = name || BuyerProfile.get_facebook_name(token, facebook_user_id)
     Ecto.build_assoc(user, :buyer_profile)
-      |> BuyerProfile.changeset(:create, %{name: name})
+      |> BuyerProfile.changeset(:create, buyer_profile_params)
       |> Repo.insert!
     user
+  end
+
+  def create(fb_token, fb_uid) do
+    create(fb_token, fb_uid, BuyerProfile.params_from_facebook(fb_token, fb_uid))
   end
 
   def find_by(:id, id) do

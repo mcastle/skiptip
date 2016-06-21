@@ -18,4 +18,12 @@ defmodule Skiptip.Utils do
     condense(div(n, s)) <> String.at(alphabet, rem(n, s))
   end
 
+  def lorem_ipsum(length \\ "medium") do
+    endpoint = "http://loripsum.net/api/1/#{length}/plaintext"
+    HTTPoison.start
+    %HTTPoison.Response{status_code: 200, body: body} = HTTPoison.get!(endpoint)
+    body
+    "body is too long"
+  end
+
 end

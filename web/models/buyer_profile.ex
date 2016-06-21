@@ -10,28 +10,25 @@ defmodule Skiptip.BuyerProfile do
     field :username, :string, unique: true
     field :bio, :string
     field :picture_url, :string
+    field :email, :string, unique: true
 
     belongs_to :user, Skiptip.User
     timestamps
   end
 
-	def default_params(%{name: name, username: username}) do
+	def default_params(params) do
+    %{name: name} = params
 		%{
 			bio: "hello world",
 			picture_url: "https://s3.amazonaws.com/skiptip-development/public/no_profile_picture.png",
-			name: name,
-			display_name: name,
-			username: username
-		}
+      display_name: name,
+      username: generate_username(name)
+		} |> Map.merge(params)
 	end
-
-  def default_params(%{name: name}) do
-    default_params %{name: name, username: generate_username(name)}
-  end
 
   def default_params(nil), do: %{}
 
-	@required_fields ~w(user_id name username display_name bio)
+	@required_fields ~w(user_id name username display_name bio email)
   @optional_fields ~w(picture_url)
 
   @doc """
@@ -42,18 +39,23 @@ defmodule Skiptip.BuyerProfile do
   """
   def changeset(model, :create, :empty), do: changeset(model, default_params(nil))
   def changeset(model, :create, params), do: changeset(model, default_params(params))
-  def changeset(model, params \\ :empty) do
+  def changeset(model), do: changeset(model, :empty)
+  def changeset(model, params) do
     model
     |> cast(params, @required_fields, @optional_fields)
     |> unique_constraint(:username) 
+    |> unique_constraint(:email)
   end
 
-	def get_facebook_name(fb_token, fb_uid) do
-		url = "https://graph.facebook.com/v2.6/#{fb_uid}?access_token=#{fb_token}"
+  def params_from_facebook(fb_token, fb_uid) do
+		url = "https://graph.facebook.com/v2.6/#{fb_uid}?access_token=#{fb_token}&fields=name,email"
     HTTPoison.start
     %HTTPoison.Response{status_code: status_code, body: body} = HTTPoison.get!(url)
-		Poison.decode!(body)["name"]
-	end
+    %{
+      name: Poison.decode!(body)["name"],
+      email: Poison.decode!(body)["email"]
+    }
+  end
 
 	def generate_username(name) do
 		name = name || ""
