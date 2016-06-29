@@ -12,8 +12,17 @@ defmodule Skiptip.Factory do
     create_user(%{name: name, email: dummy_email_from_name(name)})
   end
 
+  def create_user(fb_access_token, fb_user_id) do
+    name = random_full_name
+    create_user(fb_access_token, fb_user_id, %{name: name, email: dummy_email_from_name(name)})
+  end
+
   def create_user(buyer_profile_params) do
     User.create(facebook_access_token, facebook_user_id, buyer_profile_params)
+  end
+
+  def create_user(fb_access_token, fb_user_id, buyer_profile_params) do
+    User.create(fb_access_token, fb_user_id, buyer_profile_params)
   end
 
   # fb_uid for Brian Maxwell (that's me!)
@@ -47,6 +56,15 @@ defmodule Skiptip.Factory do
   def create_buyer_profile!, do: create_buyer_profile!(dummy_buyer_profile_params)
   def create_buyer_profile(params), do: new_buyer_profile(params) |> Repo.insert
   def create_buyer_profile, do: create_buyer_profile(dummy_buyer_profile_params)
+
+  def send_message(user1, user2, body) do
+    Skiptip.Message.send(%{
+      api_key: user1.api_key,
+      user_id: user1.id,
+      recipient_id: user2.id,
+      body: body
+    })
+  end
 
   def retrieve_valid_facebook_api_credentials(facebook_user_id \\ nil) do
     facebook_user_id = facebook_user_id || @facebook_user_id

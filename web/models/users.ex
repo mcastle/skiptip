@@ -6,11 +6,13 @@ defmodule Skiptip.User do
   alias Skiptip.FacebookLogin
   alias Skiptip.BuyerProfile
   alias Skiptip.User
+  alias Skiptip.Message
 
   schema "users" do
     field :api_key, :string, unique: true
     has_one :facebook_login, FacebookLogin
     has_one :buyer_profile, BuyerProfile
+    has_many :messages, Message
     timestamps
   end
 
@@ -63,5 +65,10 @@ defmodule Skiptip.User do
     User
       |> where(id: ^id)
       |> Repo.one
+  end
+
+  def authenticate(id, api_key) do
+    user = Repo.get(User, id)
+    user && user.api_key == api_key && user
   end
 end

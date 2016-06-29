@@ -16,17 +16,17 @@ defmodule Skiptip.BuyerProfile do
     timestamps
   end
 
+  def default_params(nil), do: %{}
+
 	def default_params(params) do
     %{name: name} = params
 		%{
-			bio: "hello world",
+			bio: Skiptip.Utils.lorem_ipsum,
 			picture_url: "https://s3.amazonaws.com/skiptip-development/public/no_profile_picture.png",
       display_name: name,
       username: generate_username(name)
 		} |> Map.merge(params)
 	end
-
-  def default_params(nil), do: %{}
 
 	@required_fields ~w(user_id name username display_name bio email)
   @optional_fields ~w(picture_url)

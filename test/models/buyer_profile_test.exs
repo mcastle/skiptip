@@ -29,8 +29,7 @@ defmodule Skiptip.BuyerProfileTest do
 	test "default bio is set" do
 		user = Factory. create_user_with_valid_facebook_credentials
             |> Repo.preload(:buyer_profile)
-		default_bio = "hello world"
-		assert user.buyer_profile.bio == default_bio
+    assert Regex.run(~r/^Lorem ipsum dolor sit amet/, user.buyer_profile.bio)
 	end
 
 	test "default picture is set" do

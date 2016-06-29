@@ -39,4 +39,10 @@ defmodule Skiptip.UserTest do
     assert user.api_key
   end
 
+  test "authenticate" do
+    user = Factory.create_user
+    assert User.authenticate(user.id, user.api_key) == user
+    refute User.authenticate(user.id, "invalid key")
+  end
+
 end
