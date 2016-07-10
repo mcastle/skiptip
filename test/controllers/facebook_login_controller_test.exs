@@ -12,12 +12,27 @@ defmodule Skiptip.FacebookLoginControllerTest do
   end
 
   test "creates new facebook_login if first login" do
-    %{facebook_access_token: token, facebook_user_id: user_id} = Skiptip.Factory.retrieve_valid_facebook_api_credentials
+    creds = Skiptip.Factory.retrieve_valid_facebook_api_credentials
+    {token, user_id} = {creds.facebook_access_token, creds.facebook_user_id}
 
     refute FacebookLogin.find_by(:facebook_user_id, user_id)
     FacebookLoginController.login_or_create_user(token, user_id)
     login = FacebookLogin.find_by(:facebook_user_id, user_id)
     assert login
     assert login.facebook_access_token == token
+  end
+
+  test "updates facebook_login if facebook_user_id exists" do
+    creds = Skiptip.Factory.retrieve_valid_facebook_api_credentials
+    {token, user_id} = {creds.facebook_access_token, creds.facebook_user_id}
+
+    FacebookLoginController.login_or_create_user(token, user_id)
+    login = FacebookLogin.find_by(:facebook_user_id, user_id)
+    assert login.facebook_access_token == token
+
+    new_token = Skiptip.Utils.random_string(200)
+    FacebookLoginController.login_or_create_user(new_token, user_id)
+    login = FacebookLogin.find_by(:facebook_user_id, user_id)
+    assert login.facebook_access_token == new_token
   end
 end

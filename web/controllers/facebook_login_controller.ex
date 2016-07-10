@@ -3,7 +3,7 @@ defmodule Skiptip.FacebookLoginController do
 
   alias Skiptip.FacebookLogin
   alias Skiptip.User
-  import Skiptip.Router.Helpers
+  alias Skiptip.Repo
 
   plug :scrub_params, "facebook_login" when action in [:create, :update]
 
@@ -53,9 +53,14 @@ defmodule Skiptip.FacebookLoginController do
   end
 
   def login_or_create_user(facebook_access_token, facebook_user_id) do
-    unless FacebookLogin.find_by(:facebook_user_id, facebook_user_id) do
-      User.create(facebook_access_token, facebook_user_id)
+    case FacebookLogin.find_by(:facebook_user_id, facebook_user_id) do
+      nil ->
+        User.create(facebook_access_token, facebook_user_id)
+      login ->
+        FacebookLogin.update_access_token(login, facebook_access_token)
+        Repo.get(User, login.user_id)
     end
+    |> Repo.preload(:facebook_login)
   end
 
 end

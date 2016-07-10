@@ -25,11 +25,16 @@ defmodule Skiptip.FacebookLogin do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
+    |> unique_constraint(:facebook_user_id)
   end
 
   def create(token, facebook_user_id) do
     changeset(%FacebookLogin{}, %{facebook_access_token: token, facebook_user_id: facebook_user_id})
     |> Repo.insert!
+  end
+
+  def update_access_token(model, new_token) do
+    changeset(model, %{facebook_access_token: new_token}) |> Repo.update!
   end
 
   def find_by(:facebook_user_id, fb_user_id) do
