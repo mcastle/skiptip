@@ -2,7 +2,6 @@ defmodule Skiptip.BuyerProfileTest do
   use Skiptip.ModelCase
 
   alias Skiptip.BuyerProfile
-	alias Skiptip.User
   alias Skiptip.Factory
 
   @valid_attrs %{}

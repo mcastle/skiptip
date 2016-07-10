@@ -2,7 +2,6 @@ defmodule Skiptip.FacebookLoginTest do
   use Skiptip.ModelCase
 
   alias Skiptip.FacebookLogin
-  alias Skiptip.User
 
   @valid_attrs %{}
   @invalid_attrs %{}

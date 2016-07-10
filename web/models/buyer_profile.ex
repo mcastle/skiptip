@@ -19,12 +19,11 @@ defmodule Skiptip.BuyerProfile do
   def default_params(nil), do: %{}
 
 	def default_params(params) do
-    %{name: name} = params
 		%{
 			bio: Skiptip.Utils.lorem_ipsum,
 			picture_url: "https://s3.amazonaws.com/skiptip-development/public/no_profile_picture.png",
-      display_name: name,
-      username: generate_username(name)
+      display_name: params.name,
+      username: generate_username(params.name)
 		} |> Map.merge(params)
 	end
 
@@ -49,9 +48,10 @@ defmodule Skiptip.BuyerProfile do
   end
 
   def params_from_facebook(fb_token, fb_uid) do
-		url = "https://graph.facebook.com/v2.6/#{fb_uid}?access_token=#{fb_token}&fields=name,email"
+    endpoint = "https://graph.facebook.com/v2.6/#{fb_uid}?"
+    params = %{ access_token: fb_token, fields: "name,email" }
     HTTPoison.start
-    %HTTPoison.Response{status_code: status_code, body: body} = HTTPoison.get!(url)
+    %HTTPoison.Response{body: body} = HTTPoison.get!(endpoint <> URI.encode_query(params))
     %{
       name: Poison.decode!(body)["name"],
       email: Poison.decode!(body)["email"]
