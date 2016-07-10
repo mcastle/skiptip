@@ -80,7 +80,7 @@ defmodule Skiptip.Factory do
   defp facebook_access_token, do: Utils.random_string(217)
   defp dummy_email_from_name(name), do: "#{name}@domain.com" |> String.replace(" ", "") |> String.downcase
 
-  defp retrieve_access_token_from_development_db(facebook_user_id) do
+  def retrieve_access_token_from_development_db(facebook_user_id) do
     %FacebookLogin{facebook_access_token: fb_access_token} = FacebookLogin
       |> where(facebook_user_id: ^facebook_user_id)
       |> DevelopmentRepo.one

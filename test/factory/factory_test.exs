@@ -3,12 +3,19 @@ defmodule Skiptip.FactoryTest do
   alias Skiptip.Factory
 
   test "create_user_with_valid_facebook_credentials" do
+
+    # sometimes this test runs before db is actually reloaded
+    # causing a unique validation error where this method has
+    # already been called before, so ensure relevant tables
+    # are empty before running test
+    Skiptip.Repo.delete_all(Skiptip.User)
+    Skiptip.Repo.delete_all(Skiptip.BuyerProfile)
+    Skiptip.Repo.delete_all(Skiptip.FacebookLogin)
     user = Factory.create_user_with_valid_facebook_credentials
       |> Skiptip.Repo.preload(:facebook_login)
 
     assert String.length(user.facebook_login.facebook_user_id) > 15
     assert String.length(user.facebook_login.facebook_access_token) > 200
-
   end
 
   # note, this test might be flaky depending on the state
