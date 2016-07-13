@@ -1,6 +1,5 @@
 defmodule Skiptip.Message do
   use Skiptip.Web, :model
-  import Ecto.Query
   alias Skiptip.Repo
 
   schema "messages" do

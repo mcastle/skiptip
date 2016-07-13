@@ -31,6 +31,7 @@ defmodule Skiptip.Factory do
     facebook_user_id = fb_uid || @facebook_user_id
     retrieve_access_token_from_development_db(facebook_user_id)
       |> User.create(facebook_user_id)
+      |> Repo.preload(:facebook_login)
   end
 
   def dummy_buyer_profile_params, do: dummy_buyer_profile_params(random_full_name)

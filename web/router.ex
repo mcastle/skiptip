@@ -23,8 +23,8 @@ defmodule Skiptip.Router do
   end
 
 
-  # Other scopes may use custom stacks.
-  # scope "/api", Skiptip do
-  #   pipe_through :api
-  # end
+  scope "/api", Skiptip do
+    pipe_through :api
+    get "/login", FacebookLoginController, :create
+  end
 end

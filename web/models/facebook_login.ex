@@ -44,11 +44,7 @@ defmodule Skiptip.FacebookLogin do
   end
 
   def find_user_by(:facebook_user_id, fb_user_id) do
-    user = nil
-    facebook_login = find_by(:facebook_user_id, fb_user_id) 
-    if facebook_login do
-      user = User.find_by(:id, facebook_login.user_id)
-    end
-    user
+    facebook_login = find_by(:facebook_user_id, fb_user_id)
+    if facebook_login, do: Repo.get(User, facebook_login.user_id)
   end
 end

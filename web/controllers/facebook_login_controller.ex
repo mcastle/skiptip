@@ -5,8 +5,6 @@ defmodule Skiptip.FacebookLoginController do
   alias Skiptip.User
   alias Skiptip.Repo
 
-  plug :scrub_params, "facebook_login" when action in [:create, :update]
-
   @facebook_callback_url "http://54.172.15.89/facebook_logins/callback"
   @facebook_client_id "504019469804454"
   @facebook_app_secret "3c071367622fc724dd500705d659170c"
@@ -20,6 +18,12 @@ defmodule Skiptip.FacebookLoginController do
       scope: "email"
     }
     redirect(conn, external: endpoint <> URI.encode_query(params))
+  end
+
+  def create(conn, params) do
+    {action, user} = login_or_create_user(params["access_token"], params["user_id"])
+    payload = %{api_key: user.api_key, user_id: user.id, action: action}
+    render(conn, "login_success.json", payload: payload)
   end
 
   def callback(conn, params) do
@@ -55,12 +59,16 @@ defmodule Skiptip.FacebookLoginController do
   def login_or_create_user(facebook_access_token, facebook_user_id) do
     case FacebookLogin.find_by(:facebook_user_id, facebook_user_id) do
       nil ->
-        User.create(facebook_access_token, facebook_user_id)
+        {:create,
+          User.create(facebook_access_token, facebook_user_id)
+            |> Repo.preload(:facebook_login)
+        }
       login ->
         FacebookLogin.update_access_token(login, facebook_access_token)
-        Repo.get(User, login.user_id)
+        {:update,
+          Repo.get(User, login.user_id) |> Repo.preload(:facebook_login)
+        }
     end
-    |> Repo.preload(:facebook_login)
   end
 
 end

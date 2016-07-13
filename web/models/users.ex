@@ -50,7 +50,7 @@ defmodule Skiptip.User do
     Ecto.build_assoc(user, :facebook_login)
       |> FacebookLogin.changeset(%{facebook_access_token: token, facebook_user_id: facebook_user_id})
       |> Repo.insert!
- 
+
     Ecto.build_assoc(user, :buyer_profile)
       |> BuyerProfile.changeset(:create, buyer_profile_params)
       |> Repo.insert!
@@ -59,12 +59,6 @@ defmodule Skiptip.User do
 
   def create(fb_token, fb_uid) do
     create(fb_token, fb_uid, BuyerProfile.params_from_facebook(fb_token, fb_uid))
-  end
-
-  def find_by(:id, id) do
-    User
-      |> where(id: ^id)
-      |> Repo.one
   end
 
   def authenticate(id, api_key) do
