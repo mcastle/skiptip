@@ -68,10 +68,7 @@ defmodule Skiptip.Factory do
 
   def retrieve_valid_facebook_api_credentials(facebook_user_id \\ nil) do
     facebook_user_id = facebook_user_id || @facebook_user_id
-    %{
-      facebook_access_token: retrieve_access_token_from_development_db(facebook_user_id),
-      facebook_user_id: facebook_user_id
-    }
+    {facebook_user_id, retrieve_access_token_from_development_db(facebook_user_id)}
   end
 
   defp random_full_name, do: "#{random_name} #{random_name}"

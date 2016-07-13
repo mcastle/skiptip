@@ -12,8 +12,7 @@ defmodule Skiptip.FacebookLoginControllerTest do
   end
 
   test "creates new facebook_login if first login" do
-    creds = Skiptip.Factory.retrieve_valid_facebook_api_credentials
-    {token, user_id} = {creds.facebook_access_token, creds.facebook_user_id}
+    {user_id, token} = Skiptip.Factory.retrieve_valid_facebook_api_credentials
 
     refute FacebookLogin.find_by(:facebook_user_id, user_id)
     FacebookLoginController.login_or_create_user(token, user_id)
@@ -23,8 +22,7 @@ defmodule Skiptip.FacebookLoginControllerTest do
   end
 
   test "updates facebook_login if facebook_user_id exists" do
-    creds = Skiptip.Factory.retrieve_valid_facebook_api_credentials
-    {token, user_id} = {creds.facebook_access_token, creds.facebook_user_id}
+    {user_id, token} = Skiptip.Factory.retrieve_valid_facebook_api_credentials
 
     FacebookLoginController.login_or_create_user(token, user_id)
     login = FacebookLogin.find_by(:facebook_user_id, user_id)
