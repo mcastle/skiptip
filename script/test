@@ -1,10 +1,30 @@
 #!/usr/bin/env bash
-test_filename=$1
-search_string="test.*$2.* do"
-line_number=`cat -n "$test_filename" | grep "$search_string" | head -1 | grep -E -o '^\s+[0-9]+' | sed 's/ //g'`
+search_string="test.*$1.* do"
 
-if [ -z "$line_number" ]; then
-  echo "no matching test found"
-else
-  mix test "$test_filename:$line_number"
+function run_test {
+  line_number=`cat -n "$1" | grep "$search_string" | head -1 | grep -E -o '^\s+[0-9]+' | sed 's/ //g'`
+  if [ ! -z "$line_number" ]; then
+    echo "running mix test $1:$line_number" && mix test "$1:$line_number"
+    exit 1
+  fi
+}
+
+function run_test_in_directory {
+  find $1 -type f | while read line; do run_test $line; done
+}
+
+if [ -z $1 ]; then
+  mix test
 fi
+
+if [ -z $2 ]; then
+  run_test_in_directory "/application/test"
+elif [ -d $2 ]; then
+  run_test_in_directory "$2"
+elif [ -f $2 ]; then
+  run_test $2
+else
+  echo "specified test location does not exist" && exit
+fi
+
+[ $? -ne 1 ] && echo "no matching test found"
