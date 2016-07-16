@@ -30,4 +30,8 @@ defmodule Skiptip.Utils do
     Enum.each tables, &Skiptip.Repo.delete_all(&1)
   end
 
+  def to_json(map), do: Poison.encode!(map)
+  def to_map(json), do: Poison.decode!(json)
+
+
 end

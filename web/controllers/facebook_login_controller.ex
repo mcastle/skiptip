@@ -57,18 +57,29 @@ defmodule Skiptip.FacebookLoginController do
   end
 
   def login_or_create_user(facebook_access_token, facebook_user_id) do
-    case FacebookLogin.find_by(:facebook_user_id, facebook_user_id) do
-      nil ->
-        {:create,
-          User.create(facebook_access_token, facebook_user_id)
-            |> Repo.preload(:facebook_login)
-        }
-      login ->
-        FacebookLogin.update_access_token(login, facebook_access_token)
-        {:update,
-          Repo.get(User, login.user_id) |> Repo.preload(:facebook_login)
-        }
+    if facebook_token_valid(facebook_access_token) do
+      case FacebookLogin.find_by(:facebook_user_id, facebook_user_id) do
+        nil ->
+          {:create,
+            User.create(facebook_access_token, facebook_user_id)
+              |> Repo.preload(:facebook_login)
+          }
+        login ->
+          FacebookLogin.update_access_token(login, facebook_access_token)
+          {:update,
+            Repo.get(User, login.user_id) |> Repo.preload(:facebook_login)
+          }
+      end
+    else
+      {:invalid_access_token, "The access token provided was refused by facebook"}
     end
+  end
+
+  def facebook_token_valid(token) do
+    url = "https://graph.facebook.com/me"
+    params = %{access_token: token}
+    request = Skiptip.Requests.get(url, params)
+    request.status_code == 200
   end
 
 end

@@ -26,5 +26,6 @@ defmodule Skiptip.Router do
   scope "/api", Skiptip do
     pipe_through :api
     get "/login", FacebookLoginController, :create
+    get "/places/search", PlacesController, :search
   end
 end
