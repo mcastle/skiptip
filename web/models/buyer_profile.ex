@@ -80,7 +80,7 @@ defmodule Skiptip.BuyerProfile do
 			_ -> find_first_distinct_username(first_name, count + 1)
 		end
 	end
-	
+
 	def find_by(:user_id, user_id) do
     BuyerProfile
       |> where(user_id: ^user_id)

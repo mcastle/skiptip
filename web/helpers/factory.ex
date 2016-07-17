@@ -25,6 +25,10 @@ defmodule Skiptip.Factory do
     User.create(fb_access_token, fb_user_id, buyer_profile_params)
   end
 
+  def create_user_with_name(name) do
+    dummy_buyer_profile_params(name) |> create_user |> Repo.preload(:buyer_profile)
+  end
+
   # fb_uid for Brian Maxwell (that's me!)
   @facebook_user_id "10154127153411215"
   def create_user_with_valid_facebook_credentials(fb_uid \\ nil) do

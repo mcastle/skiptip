@@ -27,5 +27,11 @@ defmodule Skiptip.Router do
     pipe_through :api
     get "/login", FacebookLoginController, :create
     get "/places/search", PlacesController, :search
+    get "/:user_id", BuyerProfilesController, :all
+    get "/:user_id/display_name", BuyerProfilesController, :display_name
+    get "/:user_id/username", BuyerProfilesController, :username
+    get "/:user_id/email", BuyerProfilesController, :email
+    get "/:user_id/bio", BuyerProfilesController, :bio
+    get "/:user_id/picture_url", BuyerProfilesController, :picture_url
   end
 end

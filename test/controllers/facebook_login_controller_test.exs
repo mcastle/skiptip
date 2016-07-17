@@ -41,7 +41,7 @@ defmodule Skiptip.FacebookLoginControllerTest do
   end
 
   test "facebook_token_valid returns true if access token is valid" do
-    {user_id, token} = Skiptip.Factory.retrieve_valid_facebook_api_credentials
+    {_, token} = Skiptip.Factory.retrieve_valid_facebook_api_credentials
     assert FacebookLoginController.facebook_token_valid(token)
   end
 

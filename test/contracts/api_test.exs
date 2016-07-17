@@ -49,6 +49,60 @@ defmodule Skiptip.ContractTests do
     assert response.resp_body == expectation
   end
 
+  test "/api/:user_id" do
+    user = Factory.create_user_with_name("jeff smith")
+    response = make_authenticated_api_call(user, "")
+    expectation = %{
+      action: :get,
+      display_name: user.buyer_profile.display_name,
+      username: user.buyer_profile.username,
+      bio: user.buyer_profile.bio,
+      picture_url: user.buyer_profile.picture_url,
+      email: user.buyer_profile.email
+    } |> to_json
+    assert response.resp_body == expectation
+  end
+
+  test "/api/:user_id/display_name" do
+    user = Factory.create_user_with_name("jeff smith")
+    response = make_authenticated_api_call(user, "display_name")
+    expectation = %{action: :get, display_name: user.buyer_profile.display_name} |> to_json
+    assert response.resp_body == expectation
+  end
+
+  test "/api/:user_id/username" do
+    user = Factory.create_user_with_name("jeff smith")
+    response = make_authenticated_api_call(user, "username")
+    expectation = %{action: :get, username: user.buyer_profile.username} |> to_json
+    assert response.resp_body == expectation
+  end
+
+  test "api/:user_id/email" do
+    user = Factory.create_user_with_name("jeff smith")
+    response = make_authenticated_api_call(user, "email")
+    expectation = %{action: :get, username: user.buyer_profile.email} |> to_json
+    assert response.resp_body == expectation
+  end
+
+  test "api/:user_id/bio" do
+    user = Factory.create_user_with_name("jeff smith")
+    response = make_authenticated_api_call(user, "bio")
+    expectation = %{action: :get, username: user.buyer_profile.bio} |> to_json
+    assert response.resp_body == expectation
+  end
+
+  test "api/:user_id/picture_url" do
+    user = Factory.create_user_with_name("jeff smith")
+    response = make_authenticated_api_call(user, "picture_url")
+    expectation = %{action: :get, username: user.buyer_profile.picture_url} |> to_json
+    assert response.resp_body == expectation
+  end
+
+  defp make_authenticated_api_call(user, resource) do
+    url = "/api/#{user.id}/#{resource}"
+    get_response(url, %{api_key: user.api_key})
+  end
+
   defp get_response(endpoint, params) do
     url = url(endpoint, params)
     conn(:get, url) |> send_request
