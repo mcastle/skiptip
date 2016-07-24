@@ -1,0 +1,31 @@
+<div id="map"></div>
+<div id="marker"></div>
+<script>
+  var Map = require("web/static/js/maps/select_location").Map
+  Map.init('map')
+</script>
+<style>
+  body {
+    margin: 0
+  }
+  <% marker_height = "100px" %>
+  <% marker_width = "100px" %>
+
+  #map {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  #marker {
+    position: fixed;
+    top: calc(50% - <%= marker_height %>);
+    left: calc(50% - (<%= marker_width %> / 2));
+    width: <%= marker_width %>;
+    height: <%= marker_height %>;
+    background-image: url("https://s3.amazonaws.com/skiptip-development/public/pin_green.png");
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+</style>

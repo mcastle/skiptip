@@ -18,6 +18,8 @@ defmodule Skiptip.Router do
 
     get "/", PageController, :index
 
+    get "/maps/location_selector", MapsController, :location_selector
+
     get "/facebook_logins/new", FacebookLoginController, :new
     get "/facebook_logins/callback", FacebookLoginController, :callback
   end
