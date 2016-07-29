@@ -1,0 +1,1 @@
+<script> SkipTip.Map = require("web/static/js/maps/select_location").Map.init('map') </script>

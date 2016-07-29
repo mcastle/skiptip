@@ -1,15 +1,13 @@
 <div id="map"></div>
 <div id="marker"></div>
-<script>
-  var Map = require("web/static/js/maps/select_location").Map
-  Map.init('map')
-</script>
 <style>
+
   body {
     margin: 0
   }
-  <% marker_height = "100px" %>
-  <% marker_width = "100px" %>
+
+  <% marker_height = "80px" %>
+  <% marker_width = marker_height %>
 
   #map {
     position: fixed;

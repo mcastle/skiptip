@@ -13,6 +13,18 @@
 // to also remove its path from "config.paths.watched".
 import "phoenix_html"
 
+window.SkipTip = {
+  initMobile: function() {
+    this.Callbacks = require("web/static/js/cs_callbacks").Callbacks
+  },
+
+  initDesktop: function() {
+    // attach different callbacks to the window here
+  },
+
+  Map: null
+}
+
 // Import local files
 //
 // Local files can be imported directly using relative
