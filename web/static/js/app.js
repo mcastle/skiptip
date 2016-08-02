@@ -12,6 +12,17 @@
 // If you no longer want to use a dependency, remember
 // to also remove its path from "config.paths.watched".
 import "phoenix_html"
+import Session from "./session"
+
+function getParameterByName(name, url) {
+  if (!url) url = window.location.href;
+  name = name.replace(/[\[\]]/g, "\\$&");
+  var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+      results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
 
 window.SkipTip = {
   initMobile: function() {
@@ -24,6 +35,10 @@ window.SkipTip = {
 
   Map: null
 }
+
+var apiKey = getParameterByName("api_key", document.location)
+var userId = getParameterByName("user_id", document.location)
+Session.init(userId, apiKey)
 
 // Import local files
 //
