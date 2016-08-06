@@ -9,7 +9,6 @@ defmodule Skiptip.Repo.Migrations.CreateBuyerProfile do
       add :username, :string
       add :bio, :string
       add :picture_url, :string
-      
 
       timestamps
     end
