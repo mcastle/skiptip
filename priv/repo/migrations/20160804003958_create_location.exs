@@ -4,7 +4,7 @@ defmodule Skiptip.Repo.Migrations.CreateLocation do
   def up do
     create table(:locations) do
       add :user_id, :integer
-      add :point, :geometry
+      add :point, :geography
 
       timestamps
     end

@@ -22,9 +22,21 @@ defmodule Skiptip.Location do
     |> cast(params, @required_fields, @optional_fields)
   end
 
-  def update(model, lat, lon) do
-    geo = %Geo.Point{coordinates: {lat, lon}}
+  def update(model, lat, lng) do
+    # longitude and latitude is reversed
+    coordinates = {lng, lat}
+    # The World Geodetic System srid is 4326
+    wgs84_srid = 4326
+    geo = %Geo.Point{coordinates: coordinates, srid: wgs84_srid}
     updated_location = changeset(model, %{point: geo})
     Skiptip.Repo.update!(updated_location)
   end
+
+  def point(lat, lng), do: %Geo.Point{coordinates: {lng, lat}}
+  def point({lat, lng}), do: %Geo.Point{coordinates: {lng, lat}}
+
+  def latlng(%Geo.Point{coordinates: {lng, lat}}), do: {lat, lng}
+  def latlng(%Skiptip.Location{point: point}), do: latlng(point)
+
+
 end

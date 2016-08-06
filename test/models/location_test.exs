@@ -22,6 +22,7 @@ defmodule Skiptip.LocationTest do
     user = Factory.create_user |> Repo.preload(:location)
     refute user.location.point
     user.location |> Location.update(90, 120)
-    assert Repo.get(Location, user.location.id).point.coordinates == { 90, 120 }
+    coordinates = Repo.get(Location, user.location.id) |> Location.latlng
+    assert coordinates == { 90, 120 }
   end
 end
