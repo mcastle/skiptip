@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+mix skip_tip.load_sample_data
