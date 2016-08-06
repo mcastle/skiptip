@@ -5,6 +5,7 @@ defmodule Skiptip.Factory do
   alias Skiptip.User
   alias Skiptip.FacebookLogin
   alias Skiptip.BuyerProfile
+  alias Skiptip.Location
   import Ecto.Query
 
   def create_user do
@@ -61,6 +62,12 @@ defmodule Skiptip.Factory do
   def create_buyer_profile!, do: create_buyer_profile!(dummy_buyer_profile_params)
   def create_buyer_profile(params), do: new_buyer_profile(params) |> Repo.insert
   def create_buyer_profile, do: create_buyer_profile(dummy_buyer_profile_params)
+
+  def create_user_with_location(lat, lon) do
+    user = create_user |> Repo.preload(:location)
+    new_location = Location.update(user.location, lat, lon)
+    Repo.get(User, user.id) |> Repo.preload(:location)
+  end
 
   def send_message(user1, user2, body) do
     Skiptip.Message.send(%{

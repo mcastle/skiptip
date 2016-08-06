@@ -17,7 +17,8 @@ config :skiptip, Skiptip.Repo,
   password: "skiptip",
   database: "skiptip_test",
   hostname: "localhost",
-  pool: Ecto.Adapters.SQL.Sandbox
+  pool: Ecto.Adapters.SQL.Sandbox,
+  extensions: [{Geo.PostGIS.Extension, library: Geo}]
 
 config :skiptip, Skiptip.DevelopmentRepo,
   adapter: Ecto.Adapters.Postgres,
@@ -25,4 +26,5 @@ config :skiptip, Skiptip.DevelopmentRepo,
   password: "skiptip",
   database: "skiptip_development",
   hostname: "localhost",
-  pool: Ecto.Adapters.SQL.Sandbox
+  pool: Ecto.Adapters.SQL.Sandbox,
+  extensions: [{Geo.PostGIS.Extension, library: Geo}]

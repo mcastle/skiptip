@@ -1,6 +1,8 @@
 defmodule Skiptip.FactoryTest do
   use ExUnit.Case
+  alias Skiptip.Repo
   alias Skiptip.Factory
+  alias Skiptip.Location
 
   test "create_user_with_valid_facebook_credentials" do
 
@@ -8,11 +10,11 @@ defmodule Skiptip.FactoryTest do
     # causing a unique validation error where this method has
     # already been called before, so ensure relevant tables
     # are empty before running test
-    Skiptip.Repo.delete_all(Skiptip.User)
-    Skiptip.Repo.delete_all(Skiptip.BuyerProfile)
-    Skiptip.Repo.delete_all(Skiptip.FacebookLogin)
+    Repo.delete_all(Skiptip.User)
+    Repo.delete_all(Skiptip.BuyerProfile)
+    Repo.delete_all(Skiptip.FacebookLogin)
     user = Factory.create_user_with_valid_facebook_credentials
-      |> Skiptip.Repo.preload(:facebook_login)
+      |> Repo.preload(:facebook_login)
 
     assert String.length(user.facebook_login.facebook_user_id) > 15
     assert String.length(user.facebook_login.facebook_access_token) > 200
@@ -26,6 +28,12 @@ defmodule Skiptip.FactoryTest do
     access_token = @facebook_user_id
       |> Factory.retrieve_access_token_from_development_db
     assert String.length(access_token) > 200
+  end
+
+  test "create_user_with_location" do
+    user = Factory.create_user_with_location('100.002', '200.234')
+    coordinates = Repo.get(Location, user.location.id).point.coordinates
+    assert coordinates == { 100.002, 200.234 }
   end
 
 end

@@ -7,11 +7,13 @@ defmodule Skiptip.User do
   alias Skiptip.BuyerProfile
   alias Skiptip.User
   alias Skiptip.Message
+  alias Skiptip.Location
 
   schema "users" do
     field :api_key, :string, unique: true
     has_one :facebook_login, FacebookLogin
     has_one :buyer_profile, BuyerProfile
+    has_one :location, Location
     has_many :messages, Message
     timestamps
   end
@@ -26,7 +28,7 @@ defmodule Skiptip.User do
   def changeset(model, params) do
     model
     |> cast(params, @required_fields, @optional_fields)
-    |> unique_constraint(:api_key) 
+    |> unique_constraint(:api_key)
   end
 
   def default_params do
@@ -53,6 +55,10 @@ defmodule Skiptip.User do
 
     Ecto.build_assoc(user, :buyer_profile)
       |> BuyerProfile.changeset(:create, buyer_profile_params)
+      |> Repo.insert!
+
+    Ecto.build_assoc(user, :location)
+      |> Location.changeset(%{})
       |> Repo.insert!
     user
   end

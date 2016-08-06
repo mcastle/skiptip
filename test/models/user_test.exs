@@ -4,6 +4,7 @@ defmodule Skiptip.UserTest do
   alias Skiptip.FacebookLogin
   alias Skiptip.BuyerProfile
   alias Skiptip.User
+  alias Skiptip.Location
   alias Skiptip.Factory
 
   @valid_attrs %{}
@@ -32,6 +33,11 @@ defmodule Skiptip.UserTest do
   test "associated buyer_profile gets created on create" do
 		user = Factory.create_user_with_valid_facebook_credentials
     assert BuyerProfile.find_by(:user_id, user.id)
+  end
+
+  test "associated location gets created on create" do
+    user = Factory.create_user |> Repo.preload(:location)
+    assert user.location
   end
 
   test "api_key generated on create" do
