@@ -5,6 +5,7 @@ defmodule Skiptip.Searches do
 
   alias Skiptip.Location
   alias Skiptip.Repo
+  alias Skiptip.RidesProviderProfile
 
 
   # rounded up to nearest meter
@@ -13,12 +14,11 @@ defmodule Skiptip.Searches do
   def rides(coordinates) do
     my_point = Location.point(coordinates)
     query = from l in Location,
+            join: r in RidesProviderProfile,
+            on: r.available == true and l.user_id == r.user_id,
             select: l.user_id,
-            #select: [l.point, st_distance(l.point, ^my_point)]
             where: st_dwithin(l.point, ^my_point, ^@meters_in_mile)
     Repo.all(query)
-
-    #raise Repo.all(query)
   end
 
 end

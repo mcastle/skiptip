@@ -8,12 +8,14 @@ defmodule Skiptip.User do
   alias Skiptip.User
   alias Skiptip.Message
   alias Skiptip.Location
+  alias Skiptip.RidesProviderProfile
 
   schema "users" do
     field :api_key, :string, unique: true
     has_one :facebook_login, FacebookLogin
     has_one :buyer_profile, BuyerProfile
     has_one :location, Location
+    has_one :rides_provider_profile, RidesProviderProfile
     has_many :messages, Message
     timestamps
   end

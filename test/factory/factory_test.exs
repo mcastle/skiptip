@@ -3,6 +3,7 @@ defmodule Skiptip.FactoryTest do
   alias Skiptip.Repo
   alias Skiptip.Factory
   alias Skiptip.Location
+  alias Skiptip.User
 
   test "create_user_with_valid_facebook_credentials" do
 
@@ -31,9 +32,30 @@ defmodule Skiptip.FactoryTest do
   end
 
   test "create_user_with_location" do
-    user = Factory.create_user_with_location('100.002', '200.234')
-    coordinates = Repo.get(Location, user.location.id).point.coordinates
-    assert coordinates == { 100.002, 200.234 }
+    user = Factory.create_user_with_location('55.002', '70.234')
+    coordinates = Repo.get(Location, user.location.id).point |> Location.latlng
+    assert coordinates == { 55.002, 70.234 }
+  end
+
+  test "create_user also creates specified associations" do
+
+    facebook_login_cs = %{ facebook_user_id: Factory.facebook_user_id }
+    buyer_profile_cs = %{ username: "username" }
+    location_cs = %{ point: Location.point({ 40, 60 }) }
+    rides_provider_profile_cs = %{ available: true }
+
+    user = Factory.create_user([
+      { :facebook_login, facebook_login_cs },
+      { :buyer_profile, buyer_profile_cs },
+      { :location, location_cs },
+      { :rides_provider_profile, rides_provider_profile_cs }
+    ])
+
+    assert Repo.get(User, user.id)
+    assert user.facebook_login.facebook_user_id == facebook_login_cs.facebook_user_id
+    assert user.buyer_profile.username == buyer_profile_cs.username
+    assert Location.latlng(user.location) == Location.latlng(location_cs.point)
+    assert user.rides_provider_profile.available == rides_provider_profile_cs.available
   end
 
 end

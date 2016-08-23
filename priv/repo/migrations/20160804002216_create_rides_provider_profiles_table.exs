@@ -4,7 +4,7 @@ defmodule Skiptip.Repo.Migrations.CreateRidesProviderProfilesTable do
   def change do
     create table(:rides_provider_profiles) do
       add :user_id, :int
-      add :preferred_payment_method, :string
+      add :payment_types, :string
       add :make, :int
       add :model, :int
       add :max_drive_distance, :int

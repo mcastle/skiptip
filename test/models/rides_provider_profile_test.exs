@@ -3,7 +3,7 @@ defmodule Skiptip.RidesProviderProfileTest do
 
   alias Skiptip.RidesProviderProfile
 
-  @valid_attrs %{available: true, max_drive_distance: 42, max_seats: 42, preferred_payment_method: "some content", rate: 42, user_id: 42}
+  @valid_attrs %{available: true, max_drive_distance: 42, max_seats: 42, payment_types: "some content", rate: 42, user_id: 42}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

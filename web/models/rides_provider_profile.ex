@@ -3,7 +3,7 @@ defmodule Skiptip.RidesProviderProfile do
 
   schema "rides_provider_profiles" do
     field :user_id, :integer
-    field :preferred_payment_method, :string
+    field :payment_types, :string
     field :max_drive_distance, :integer
     field :rate, :integer
     field :max_seats, :integer
@@ -12,7 +12,7 @@ defmodule Skiptip.RidesProviderProfile do
     timestamps
   end
 
-  @required_fields ~w(user_id preferred_payment_method max_drive_distance rate max_seats available)
+  @required_fields ~w(user_id payment_types max_drive_distance rate max_seats available)
   @optional_fields ~w()
 
   @doc """
