@@ -31,12 +31,6 @@ defmodule Skiptip.FactoryTest do
     assert String.length(access_token) > 200
   end
 
-  test "create_user_with_location" do
-    user = Factory.create_user_with_location('55.002', '70.234')
-    coordinates = Repo.get(Location, user.location.id).point |> Location.latlng
-    assert coordinates == { 55.002, 70.234 }
-  end
-
   test "create_user also creates specified associations" do
 
     facebook_login_cs = %{ facebook_user_id: Factory.facebook_user_id }

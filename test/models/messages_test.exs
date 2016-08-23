@@ -9,6 +9,7 @@ defmodule Skiptip.MessageTest do
   @valid_attrs %{}
   @invalid_attrs %{}
 
+  @tag :skip
   test "send message" do
     user1 = Factory.create_user
     user2 = Factory.create_user
@@ -27,6 +28,7 @@ defmodule Skiptip.MessageTest do
     assert message.body == message_body
   end
 
+  @tag :skip
   test "send message with invalid api key fails" do
     user1 = Factory.create_user
     user2 = Factory.create_user

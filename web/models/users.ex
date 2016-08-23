@@ -16,7 +16,6 @@ defmodule Skiptip.User do
     has_one :buyer_profile, BuyerProfile
     has_one :location, Location
     has_one :rides_provider_profile, RidesProviderProfile
-    has_many :messages, Message
     timestamps
   end
 

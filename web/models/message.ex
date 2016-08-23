@@ -5,7 +5,8 @@ defmodule Skiptip.Message do
   schema "messages" do
     field :recipient_id, :integer
     field :body, :string
-    belongs_to :user, Skiptip.User
+
+    belongs_to :service, Skiptip.Service
     timestamps
   end
 

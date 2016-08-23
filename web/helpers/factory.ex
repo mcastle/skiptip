@@ -80,11 +80,6 @@ defmodule Skiptip.Factory do
   def create_buyer_profile(params), do: new_buyer_profile(params) |> Repo.insert
   def create_buyer_profile, do: create_buyer_profile(dummy_buyer_profile_params)
 
-  def create_user_with_location(lat, lng) do
-    location_cs = %{ point: Location.point({ lat, lng }) }
-    [{ :location, location_cs }] |> create_user
-  end
-
   def send_message(user1, user2, body) do
     Skiptip.Message.send(%{
       api_key: user1.api_key,
