@@ -1,6 +1,10 @@
 defmodule Skiptip.Service do
   use Skiptip.Web, :model
+  alias Skiptip.Repo
   alias Skiptip.Service
+  alias Skiptip.ServiceKind
+  alias Skiptip.ServicePhase
+  alias Skiptip.RideCriteria
 
   schema "services" do
     field :provider_id, :integer
