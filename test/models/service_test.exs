@@ -33,8 +33,8 @@ defmodule Skiptip.ServiceTest do
     rider = Factory.create_user
 
     service = Service.create_ride(driver.id, rider.id, ride_criteria_cs)
-    assert service.driver_id == driver.id
-    assert service.rider_id == rider.id
+    assert service.provider_id == driver.id
+    assert service.consumer_id == rider.id
     assert service.kind == ServiceKind.ride
     assert service.phase == ServicePhase.pending
 
@@ -43,7 +43,33 @@ defmodule Skiptip.ServiceTest do
     assert ride_criteria.destination.coordinates == ride_criteria_cs.destination.coordinates
     assert ride_criteria.seat_count == ride_criteria_cs.seat_count
     assert ride_criteria.rate == ride_criteria_cs.rate
-    assert ride_criteria.pickup_time == nil
-    assert ride_criteria.dropoff_time == nil
+    refute ride_criteria.pickup_time
+    refute ride_criteria.dropoff_time
+  end
+
+  test "includes returns true if service involves user" do
+    uninvolved_user = Factory.create_user
+    driver = Factory.create_user
+    rider = Factory.create_user
+    service = Service.create_ride(driver.id, rider.id, %{})
+    assert Service.includes(service, driver.id)
+    assert Service.includes(service, rider.id)
+    refute Service.includes(service, uninvolved_user.id)
+  end
+
+  test "provider_is? returns true if service provider matches provided id" do
+    driver = Factory.create_user
+    rider = Factory.create_user
+    service = Service.create_ride(driver.id, rider.id, %{})
+    assert Service.provider_is?(service, driver.id)
+    refute Service.provider_is?(service, rider.id)
+  end
+
+  test "consumer_is? returns true if service consumer matches provided id" do
+    driver = Factory.create_user
+    rider = Factory.create_user
+    service = Service.create_ride(driver.id, rider.id, %{})
+    assert Service.consumer_is?(service, rider.id)
+    refute Service.consumer_is?(service, driver.id)
   end
 end

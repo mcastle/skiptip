@@ -46,4 +46,16 @@ defmodule Skiptip.Service do
         service
     end
   end
+
+  def includes(service, user_id) do
+    provider_is?(service, user_id) || consumer_is?(service, user_id)
+  end
+
+  def provider_is?(service, provider_id) do
+    service.provider_id == provider_id
+  end
+
+  def consumer_is?(service, consumer_id) do
+    service.consumer_id == consumer_id
+  end
 end

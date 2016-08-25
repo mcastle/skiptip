@@ -2,6 +2,8 @@ defmodule Skiptip.UserSocket do
   use Phoenix.Socket
 
   ## Channels
+  channel "service_request:*", Skiptip.ServiceRequestChannel
+  channel "service:*", Skiptip.ServiceChannel
   # channel "rooms:*", Skiptip.RoomChannel
 
   ## Transports
